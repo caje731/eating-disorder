@@ -1,0 +1,32 @@
+01/02/2015 07:25:05 PM [INFO] Starting CGI Server...
+01/02/2015 07:25:05 PM [INFO] host 	= 
+01/02/2015 07:25:34 PM [INFO] Starting CGI Server...
+01/02/2015 07:25:34 PM [INFO] host 	= 
+01/02/2015 07:25:34 PM [INFO] port 	= 9000
+01/02/2015 07:25:34 PM [INFO] logfile 	= CGIServer.log
+01/02/2015 07:28:42 PM [INFO] Starting CGI Server...
+01/02/2015 07:28:42 PM [INFO] host 	= 
+01/02/2015 07:28:42 PM [INFO] port 	= 9000
+01/02/2015 07:28:42 PM [INFO] logfile 	= CGIServer.log
+01/02/2015 07:29:05 PM [ERROR] ['  File "CustomCGIServer.py", line 18, in <module>\n    httpd.serve_forever()\n', '  File "/usr/lib/python2.7/SocketServer.py", line 225, in serve_forever\n    r, w, e = select.select([self], [], [], poll_interval)\n']
+01/02/2015 07:34:52 PM [INFO] Starting CGI Server@ localhost:9000
+01/02/2015 07:34:54 PM [ERROR] (<type 'exceptions.KeyboardInterrupt'>, KeyboardInterrupt(), <traceback object at 0x14ac2d8>)
+01/02/2015 07:39:44 PM [INFO] Starting CGI Server@ localhost:9000
+01/02/2015 07:51:01 PM [INFO] Starting CGI Server@ localhost:9000
+01/02/2015 07:51:06 PM [ERROR] <type 'exceptions.KeyboardInterrupt'>  File "CustomCGIServer.py", line 15, in <module>
+    httpd.serve_forever()
+  File "/usr/lib/python2.7/SocketServer.py", line 225, in serve_forever
+    r, w, e = select.select([self], [], [], poll_interval)
+
+01/02/2015 07:52:43 PM [INFO] Starting CGI Server@ localhost:9000
+01/02/2015 07:52:45 PM [ERROR] type = <type 'exceptions.KeyboardInterrupt'> value =   File "CustomCGIServer.py", line 15, in <module>
+    httpd.serve_forever()
+  File "/usr/lib/python2.7/SocketServer.py", line 225, in serve_forever
+    r, w, e = select.select([self], [], [], poll_interval)
+
+01/02/2015 07:54:01 PM [INFO] Starting CGI Server@ localhost:9000
+01/02/2015 07:54:04 PM [ERROR] type = <type 'exceptions.KeyboardInterrupt'>, value = , traceback =   File "CustomCGIServer.py", line 15, in <module>
+    httpd.serve_forever()
+  File "/usr/lib/python2.7/SocketServer.py", line 225, in serve_forever
+    r, w, e = select.select([self], [], [], poll_interval)
+
