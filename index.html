@@ -139,7 +139,7 @@
 						pendingJobs.push(JSONobj["jobid"]);
 					}
 				}
-				window.setTimeout(getJobsData(pendingJobs),POLL_TIME_MS);
+				window.setTimeout(function(){getJobsData(pendingJobs)},POLL_TIME_MS);
 			}
 		};
 		
