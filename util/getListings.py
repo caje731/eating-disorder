@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import cgi, os, urllib2, json, subprocess, glob
 
 def trigger_all(query, city, area, location, state, pincode, category):
@@ -7,12 +8,12 @@ def trigger_all(query, city, area, location, state, pincode, category):
 	
 def get_pending_results(jobIds):
 	
-	SCRAPYD_JOBLIST_URL = 'http://localhost:6800/listjobs.json?project=scanner'
-	SCRAPYD_ITEMS_PATH	= 'C:\Users\crodrigu\items\scanner\*\*'
+	SCRAPYD_JOBLIST_URL 	= 'http://localhost:6800/listjobs.json?project=scanner'
+	SCRAPYD_ITEMS_PATH	= '../items/scanner/*/*'
 	pending_jobIds		= []	# jobs that are either still running or yet to be scheduled
 	finished_jobItems	= []	# items scraped from finished crawls
 	empty_crawls		= []	# spiders that returned nothing after crawling
-	error_jobs			= []	# Jobs whose output could not be obtained
+	error_jobs		= []	# Jobs whose output could not be obtained
 	
 	request				= urllib2.Request(SCRAPYD_JOBLIST_URL)
 	response			= urllib2.urlopen(request)
