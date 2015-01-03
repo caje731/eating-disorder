@@ -3,8 +3,8 @@ import cgi, os, urllib2, json, subprocess, glob
 
 def trigger_all(query, city, area, location, state, pincode, category):
 	#return os.system('"scrapy allcrawl query="'+query+'" city="'+city+'" area="'+area+'" location="'+location+'" state="'+state+'" pincode="'+pincode+'" category="'+category+'""')
-	subprocess.call ([	'scrapy', 'allcrawl',
-						'query='+query, 'city='+city, 'area='+area, 'location='+location, 'state='+state, 'pincode='+pincode,'category='+category])
+	#subprocess.call ([	'scrapy', 'allcrawl', 'query='+query, 'city='+city, 'area='+area, 'location='+location, 'state='+state, 'pincode='+pincode,'category='+category])
+	return subprocess.check_output(['scrapy', 'allcrawl', 'query='+query, 'city='+city, 'area='+area, 'location='+location, 'state='+state, 'pincode='+pincode,'category='+category], stderr=subprocess.STDOUT)
 	
 def get_pending_results(jobIds):
 	
@@ -131,7 +131,7 @@ if __name__ == "__main__":
 		jobIds	= fieldStore["jobIds"	].value.split(",")
 
 	if action=="TRIGGER":
-		trigger_all(query, city, area, location, state, pincode, category)
+		print trigger_all(query, city, area, location, state, pincode, category)
 	
 	elif action=="RECEIVE" : 
 		print str(get_pending_results(jobIds))
