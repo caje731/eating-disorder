@@ -199,7 +199,9 @@
 				while(true){ 
 					temp2 = temp1; 
 					//remove unicode marker and replace ' by " since JSON.parse will not accept '
-					temp1 = temp1.replace("u'", "'").replace("'", "\""); 
+					temp1 = temp1.replace("u'", "'").replace("'", "\"");
+					//remove non-breaking space \xa0 if present
+					temp1 = temp1.replace("\\xa0", "")
 					if (temp2==temp1){
 						break; // stop since there were no replacements
 					}
