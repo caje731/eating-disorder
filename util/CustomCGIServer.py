@@ -1,7 +1,7 @@
 import CGIHTTPServer, BaseHTTPServer
 import sys, logging, traceback
 
-serverName		=	'localhost'
+serverName		=	'0.0.0.0'
 serverPort		=	9000
 requestHandler 		=	CGIHTTPServer.CGIHTTPRequestHandler
 log_file		=	'CGIServer.log'
