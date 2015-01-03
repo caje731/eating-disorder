@@ -5,7 +5,7 @@ import urllib, urllib2
 import sys
 
 SCRAPYD_SCHEDULE_URL	= 'http://localhost:6800/schedule.json'
-PROJECT_NAME			= 'scanner'
+PROJECT_NAME		= 'scanner'
 
 def crawl(output_queue, spider="", city="", area="", location="", query="", category="", state="", pincode=""):
 	values 	= {	'project': PROJECT_NAME,
