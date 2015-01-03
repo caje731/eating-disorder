@@ -240,7 +240,7 @@
 				// ---------- Poll the server for pending jobs --------
 				if(pendingJobs.length > 0){
 					// Give the server some time to finish the pending jobs, and then query again
-					window.setTimeout(getJobsData(pendingJobs),POLL_TIME_MS);
+					window.setTimeout(function(){getJobsData(pendingJobs)},POLL_TIME_MS);
 				}
 			}
 		};
