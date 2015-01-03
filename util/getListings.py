@@ -9,7 +9,7 @@ def trigger_all(query, city, area, location, state, pincode, category):
 def get_pending_results(jobIds):
 	
 	SCRAPYD_JOBLIST_URL 	= 'http://localhost:6800/listjobs.json?project=scanner'
-	SCRAPYD_ITEMS_PATH	= '../items/scanner/*/*'
+	SCRAPYD_ITEMS_PATH	= '/var/www/html/scanner/items/scanner/*/*'
 	pending_jobIds		= []	# jobs that are either still running or yet to be scheduled
 	finished_jobItems	= []	# items scraped from finished crawls
 	empty_crawls		= []	# spiders that returned nothing after crawling
