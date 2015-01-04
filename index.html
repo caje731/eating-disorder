@@ -104,7 +104,7 @@
 	var SRCH_TMPL 			= "<td colspan=4> <font color='gray'>SEARCHING... </font></td>";
 	var NOLIST_TMPL 		= "<td colspan=4> <font color='red'>NO LISTING </font></td>";
 	var POLL_TIME_MS 		= 2000		// Interval for polling the server
-	var getListings_url 		= window.location.protocol+"//"+window.location.hostname+':9000/getListings.py';
+	var getListings_url 	= window.location.protocol+"//"+window.location.hostname+':9000/getListings.py';
 	var pendingJobs			= [] 	// list of job ids whose crawl-results need to be fetched next
 	
 	// Create a new instance of an XML HTTP Request
@@ -128,6 +128,8 @@
 	
 		var xhr = newXHR();
 		
+		pendingJobs = []  // reset for new search
+
 		xhr.onreadystatechange = function (){
 			if(xhr.status == 200 && xhr.readyState == 4){
 				// Extract all JSON sub-strings from the response
