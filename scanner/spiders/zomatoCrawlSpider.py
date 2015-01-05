@@ -19,12 +19,14 @@ class ZomatoCrawlSpider(CrawlSpider):
 	
 	def __init__(self, city, location, area, query, *args, **kwargs):
 		location_parts 	= location.split(' ')
-		location_1		= location_parts[0]
+		location_1		= location_parts[0].lower()
 				
-		query 		= query.replace(' ','-')
-		location 	= location.replace(' ','-')
+		query 		= query.replace(' ','-').lower()
+		location 	= location.replace(' ','-').lower()
+		city		= city.lower()
+
 		if area is not '':
-			area = area.replace(' ','-')
+			area = area.replace(' ','-').lower()
 			area = area+'-'
 		
 		if 'start_url' in kwargs:
