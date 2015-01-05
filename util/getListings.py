@@ -137,4 +137,5 @@ if __name__ == "__main__":
 		print str(get_pending_results(jobIds))
 	
 	else:
+		print 'Illegal action specified'
 		pass
