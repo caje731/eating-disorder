@@ -1,8 +1,9 @@
 #!/usr/bin/env python
+
 from __future__ import print_function
 from multiprocessing import Process, Queue
 import urllib, urllib2
-import sys
+import fileLogger, traceback, sys
 
 SCRAPYD_SCHEDULE_URL	= 'http://localhost:6800/schedule.json'
 PROJECT_NAME		= 'scanner'
@@ -33,7 +34,7 @@ def crawlproxy(output_queue, list):
 	
 def distribute(job_configs):
 	if len(job_configs) < 1:
-		print('[distribute.py][Usage_Error] No recognisable arguments provided.', file=sys.stderr)
+		print('[distributer.py] Usage_Error: No recognisable arguments provided.', file=sys.stderr)
 		
 	else:
 		# For each job, create a queue to store its output
@@ -81,5 +82,21 @@ def parse_args():
 	
 	return list_of_arglists
 	
+
 if __name__ == '__main__':
-	print(distribute(parse_args()))
+	
+	logger 	= fileLogger.get_file_logger()
+	
+	try:
+		results = distribute(parse_args())
+		logger.info('[DBTR] '+str(results))
+	except:
+		exc_type, exc_value	= sys.exc_info()[:2]
+	
+		stk_trc_entries = ''.join(traceback.format_list(traceback.extract_tb(sys.exc_info()[2])))
+		logger.error('[DBTR] type = '+str(exc_type) + ', value = '+str(exc_value) + ', traceback = '+stk_trc_entries)
+		results='{"execfault" : "Something went wrong on the server"}'
+
+	print(results)
+
+

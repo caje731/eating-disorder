@@ -5,6 +5,8 @@ import cgi, urllib2, json, re
 import fileLogger, sys, traceback
 
 def trigger_all(query, city, area, location, state, pincode, category):
+	logger = fileLogger.get_file_logger()
+	logger.debug('[APCR] Triggering scrapy allcrawl...')
 	return subprocess.check_output(['scrapy', 'allcrawl', 'query='+query, 'city='+city, 'area='+area, 'location='+location, 'state='+state, 'pincode='+pincode,'category='+category], stderr=subprocess.STDOUT)
 	
 def get_pending_results(jobIds):
@@ -94,7 +96,7 @@ def get_pending_results(jobIds):
 		if running_job["id"] in jobIds:
 			pending_jobIds.append(running_job["id"])
 	
-	return 	'{ "pending": '	+str(pending_jobIds)+', "finished": '+re.sub(r"'", replace_apos, str(finished_jobItems))+', "empty": '	+str(empty_crawls)+', "error": '+str(error_jobs)+'}'
+	return 	'{ "pending": '	+str(pending_jobIds)+', "finished": '+ str(finished_jobItems)+', "empty": '	+str(empty_crawls)+', "error": '+str(error_jobs)+'}'
 	
 
 def replace_unicode_marker(matchobj):
@@ -111,34 +113,39 @@ if __name__ == "__main__":
 	try:	
 		# Check the action specified in the POST data and do the right thing
 		fieldStore 	= cgi.FieldStorage()
-		action 		= fieldStore['action'].value
-	
-		if "query" in fieldStore:
-			query	= fieldStore["query"	].value
-		if "city" in fieldStore:
-			city	= fieldStore["city"	].value
-		if "area" in fieldStore:
-			area	= fieldStore["area"	].value
-		if "location" in fieldStore:
-			location= fieldStore["location"	].value
-		if "state" in fieldStore:
-			state	= fieldStore["state"	].value
-		if "pincode" in fieldStore:
-			pincode = fieldStore["pincode"	].value
-		if "category" in fieldStore:
-			category= fieldStore["category"	].value
-		if "jobIds" in fieldStore:
-			jobIds	= fieldStore["jobIds"	].value.split(",")
-	
-		if action=="TRIGGER":
-			results = trigger_all(query, city, area, location, state, pincode, category)
-		
-		elif action=="RECEIVE" : 
-			results = get_pending_results(jobIds)
-			results = re.sub(r'u(\'|")(.*?)\1', replace_unicode_marker, results)
-		else:
-			results='{ "execfault": "Unknown action specified='+str(action)+'" }'
+
+		if "action" not in fieldStore:
+			results='{ "execfault": "No action to process" }'
 			pass
+		else:
+			action 		= fieldStore['action'].value
+			
+			if "query" in fieldStore:
+				query	= fieldStore["query"	].value
+			if "city" in fieldStore:
+				city	= fieldStore["city"	].value
+			if "area" in fieldStore:
+				area	= fieldStore["area"	].value
+			if "location" in fieldStore:
+				location= fieldStore["location"	].value
+			if "state" in fieldStore:
+				state	= fieldStore["state"	].value
+			if "pincode" in fieldStore:
+				pincode = fieldStore["pincode"	].value
+			if "category" in fieldStore:
+				category= fieldStore["category"	].value
+			if "jobIds" in fieldStore:
+				jobIds	= fieldStore["jobIds"	].value.split(",")
+	
+			if action=="TRIGGER":
+				results = trigger_all(query, city, area, location, state, pincode, category)
+			
+			elif action=="RECEIVE" : 
+				results = get_pending_results(jobIds)
+				results = re.sub(r'u(\'|")(.*?)\1', replace_unicode_marker, results)
+			else:
+				results='{ "execfault": "Unknown action specified='+str(action)+'" }'
+				pass
 	except:
 		exc_type, exc_value	= sys.exc_info()[:2]
 	

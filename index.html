@@ -105,7 +105,8 @@
 	var NOLIST_TMPL 		= "<td colspan=4> <font color='blue'>No Listing Found	</font></td>";
 	var ERROR_TMPL			= "<td colspan=4> <font colot='red' >Search failed	</font></td>";
 	var POLL_TIME_MS 		= 2000		// Interval for polling the server
-	var getListings_url 		= window.location.protocol+"//"+window.location.hostname+':9000/getListings.py';
+	var actionProcessor_url		= window.location.protocol+"//"+window.location.hostname+':9000/actionProcessor.py';
+//	var actionProcessor_url		= 'http://localhost:9000/actionProcessor.py';
 	var pendingJobs			= [] 	// list of job ids whose crawl-results need to be fetched next
 	
 	// Create a new instance of an XML HTTP Request
@@ -151,7 +152,7 @@
 			}
 		};
 		
-		xhr.open('POST', getListings_url, true);
+		xhr.open('POST', actionProcessor_url, true);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send(encodeURI('action=TRIGGER'+
 				 '&query='		+ document.getElementById("srchName").value 	+
@@ -216,6 +217,12 @@
 				}
 				respObj = JSON.parse(temp2);
 				
+				if('execFault' in JSONobj){
+					console.log(JSONobj);
+					alert('An error occurred on the server. Please try again..');
+					return;
+				}
+				
 				// ---------- Extract required lists -----------------
 				pendingJobs 	= respObj["pending"	];
 				emptyCrawls	= respObj["empty"	];
@@ -248,7 +255,7 @@
 					try{
 						document.getElementById(erroredJobs[element]).innerHTML		= ERROR_TMPL;
 					}catch(e){
-						console.error('Could not show an errored crawl: ' erroredJobs[element]);
+						console.error('Could not show an errored crawl: '+ erroredJobs[element]);
 					}
 				}
 				
@@ -260,7 +267,7 @@
 				}
 			}
 		};
-		xhr.open('POST', getListings_url, true);
+		xhr.open('POST', actionProcessor_url, true);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send(encodeURI('action=RECEIVE&jobIds='+jobIds));
 	}

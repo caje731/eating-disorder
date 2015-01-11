@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import CGIHTTPServer, BaseHTTPServer
 import sys, traceback
 import fileLogger
