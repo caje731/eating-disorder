@@ -130,5 +130,9 @@
 				}, POLL_TIME_MS);
 			}
 		};
+
+		vm.isSearchInProgress = function(){
+			return vm.getPendingItems().length>0;
+		};
 	};
 })();

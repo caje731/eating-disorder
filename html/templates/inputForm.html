@@ -2,28 +2,33 @@
 	<label 	for="srchName">Name</label>
 	<input 	type="text" 
 			name="srchName" 
-			ng-model="scanner.input.name" 
+			ng-model="scanner.input.name"
+			placeholder="Loca Loca" 
 			required/>
 
 	<label 	for="srchLocation">Location</label>
 	<input 	type="text" 
 			name="srchLocation" 
-			ng-model="scanner.input.location" 
+			ng-model="scanner.input.location"
+			placeholder="Bandra west"  
 			required/>
 
 	<label 	for="srchArea">Area</label>
 	<input 	type="text" 
-			name="srchArea" 
+			name="srchArea"
+			placeholder="Pali Hill"  
 			ng-model="scanner.input.area"/>
 
 	<label 	for="srchCity">City</label>
 	<input 	type="text" 
 			name="srchCity" 
-			ng-model="scanner.input.city" 
+			ng-model="scanner.input.city"
+			placeholder="Mumbai" 
 			required/>			
 
 	<input 	type="button" 
 			label="Submit" 
-			ng-click="inputForm.$valid && scanner.startNewSearch()" 
+			ng-click="inputForm.$valid && scanner.startNewSearch()"
+			ng-disabled="scanner.isSearchInProgress()"
 			value="Submit"/>
 </form>
