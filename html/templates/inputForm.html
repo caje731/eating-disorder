@@ -1,0 +1,29 @@
+<form name="inputForm" novalidate>
+	<label 	for="srchName">Name</label>
+	<input 	type="text" 
+			name="srchName" 
+			ng-model="scanner.input.name" 
+			required/>
+
+	<label 	for="srchLocation">Location</label>
+	<input 	type="text" 
+			name="srchLocation" 
+			ng-model="scanner.input.location" 
+			required/>
+
+	<label 	for="srchArea">Area</label>
+	<input 	type="text" 
+			name="srchArea" 
+			ng-model="scanner.input.area"/>
+
+	<label 	for="srchCity">City</label>
+	<input 	type="text" 
+			name="srchCity" 
+			ng-model="scanner.input.city" 
+			required/>			
+
+	<input 	type="button" 
+			label="Submit" 
+			ng-click="inputForm.$valid && scanner.startNewSearch()" 
+			value="Submit"/>
+</form>

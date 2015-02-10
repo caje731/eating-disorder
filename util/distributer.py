@@ -4,29 +4,37 @@ from __future__ import print_function
 from multiprocessing import Process, Queue
 import urllib, urllib2
 import fileLogger, traceback, sys
+import json
 
 SCRAPYD_SCHEDULE_URL	= 'http://localhost:6800/schedule.json'
-PROJECT_NAME		= 'scanner'
+PROJECT_NAME			= 'scanner'
 
 def crawl(output_queue, spider="", city="", area="", location="", query="", category="", state="", pincode=""):
-	values 	= {	'project': PROJECT_NAME,
-				'spider': spider,
-				'city': city,
-				'area': area,
-				'location': location,
-				'query': query,
-				'category': category,
-				'state': state,
-				'pincode': pincode
+	values 	= {	'project'	: PROJECT_NAME,
+				'spider'	: spider,
+				'city'		: city,
+				'area'		: area,
+				'location'	: location,
+				'query'		: query,
+				'category'	: category,
+				'state'		: state,
+				'pincode'	: pincode
 				}
 
 	data 	= urllib.urlencode(values)
 	request	= urllib2.Request(SCRAPYD_SCHEDULE_URL, data)
 	response= urllib2.urlopen(request)
+	output	= response.read()
+	
+    # Append the spider name for client's convenience
+	output = json.loads(output)
+	output["websource"] = spider[:spider.find("CrawlSpider")] # extract zomato from zomatoCrawlSpider
+	#output = json.dumps(output)
+
 	if output_queue == None:
-		print(response.read())
+		print(output)
 	else:
-		output_queue.put(response.read())
+		output_queue.put(output)
 	
 def crawlproxy(output_queue, list):
 	crawl(output_queue, *list)
@@ -45,7 +53,7 @@ def distribute(job_configs):
 		for job in jobs: job.start() #start all of them
 		for job in jobs: job.join()  #wait for all to finish
 		
-		return [queue.get().strip() for queue in queues]
+		return {"results":[queue.get() for queue in queues]}
 		
 	
 def parse_args():
@@ -95,7 +103,7 @@ if __name__ == '__main__':
 	
 		stk_trc_entries = ''.join(traceback.format_list(traceback.extract_tb(sys.exc_info()[2])))
 		logger.error('[DBTR] type = '+str(exc_type) + ', value = '+str(exc_value) + ', traceback = '+stk_trc_entries)
-		results='{"execfault" : "Something went wrong on the server"}'
+		results={"execfault" : "Something went wrong on the server"}
 
 	print(results)
 

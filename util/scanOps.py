@@ -1,22 +1,44 @@
 #!/usr/bin/env python
 
-import os, subprocess, glob
-import cgi, urllib2, json, yaml, re
-import fileLogger, sys, traceback
+import fileLogger 		# for custom logging (I'm not relying on Flask's in-app logger)
+import subprocess		# for invocation of custom scrapy commands (assumed to be installed)
+import os				# 
+import glob				# filename globbing to retrieve scraped items
+import json, yaml, re	# for string processing
+import urllib2			# for invoking the scrapyd server APIs
+import sys, traceback 	# exception handling
+
+
+def replace_unicode_marker(matchobj):
+	return '"'+matchobj.group(2)+'"'		
+
+# Cleans unicode markers and single quotes from a string
+def clean_string(unclean_str):
+	unclean_str = unclean_str.replace("\\xa0", "")  # remove non-breaking space \xa0 if present
+	unclean_str = unclean_str.replace("'", "\"")	# Client-side js won't like single quote while loading json
+	unclean_str = unclean_str.replace('{u"', '{"')	# u is unicode marker
+	unclean_str = unclean_str.replace(': u"', ': "')
+	unclean_str = unclean_str.replace('[u"', '["')
+	clean_str 	= unclean_str.replace(', u"', ', "')
+	return clean_str
+
 
 def trigger_all(query, city, area, location, state, pincode, category):
 	logger = fileLogger.get_file_logger()
-	logger.debug('[APCR] Triggering scrapy allcrawl...')
+	logger.debug('[SCOP] Triggering scrapy allcrawl...')
 	return subprocess.check_output(['scrapy', 'allcrawl', 'query='+query, 'city='+city, 'area='+area, 'location='+location, 'state='+state, 'pincode='+pincode,'category='+category], stderr=subprocess.STDOUT)
-	
+
 def get_pending_results(jobIds):
 	
 	SCRAPYD_JOBLIST_URL = 'http://localhost:6800/listjobs.json?project=scanner'
 	SCRAPYD_ITEMS_PATH	= '/var/www/html/scanner/items/scanner/*/*'
+	#SCRAPYD_ITEMS_PATH	= '/items/scanner/*/*'
 	pending_jobIds		= []	# jobs that are either still running or yet to be scheduled
 	finished_jobItems	= []	# items scraped from finished crawls
 	empty_crawls		= []	# spiders that returned nothing after crawling
-	error_jobs		= []	# Jobs whose output could not be obtained
+	error_jobs			= []	# Jobs whose output could not be obtained
+	
+	logger = fileLogger.get_file_logger()
 	
 	request				= urllib2.Request(SCRAPYD_JOBLIST_URL)
 	response			= urllib2.urlopen(request)
@@ -27,6 +49,7 @@ def get_pending_results(jobIds):
 		for filename in glob.iglob(SCRAPYD_ITEMS_PATH):  # The iterator will also list unwanted files, so filter them
 			if filename.endswith(jobId+'.jl'):
 				itemFiles[jobId] = filename
+				
 	
 	for fin_job in jobstats['finished']:
 		if fin_job["id"] in jobIds:
@@ -82,7 +105,8 @@ def get_pending_results(jobIds):
 					else:
 						# EOF reached, let python close the file
 						if lines_read == 0:
-							empty_crawls.append(fin_job["spider"].replace("CrawlSpider", ""))
+							#empty_crawls.append(fin_job["spider"].replace("CrawlSpider", ""))
+							empty_crawls.append(curr_job)
 						go_to_next_line = False 
 		else:
 			# Do nothing, this job is not among the ones requested by the user
@@ -96,76 +120,57 @@ def get_pending_results(jobIds):
 		if running_job["id"] in jobIds:
 			pending_jobIds.append(running_job["id"])
 	
-	return 	{ "pending": str(pending_jobIds), "finished": str(finished_jobItems), "empty"  : str(empty_crawls), "error" : str(error_jobs)}
-	
-def replace_unicode_marker(matchobj):
-	return '"'+matchobj.group(2)+'"'		
+	return 	{"pending":pending_jobIds, "finished":finished_jobItems, "empty":empty_crawls, "error":error_jobs}
 	
 
-if __name__ == "__main__":
+def start_new_scan(request):
 	
-	results 	= ''	# Will contain a JSON-string response
-	jobIds 		= []
-	logger 		= fileLogger.get_file_logger()
+	logger 	= fileLogger.get_file_logger()
+	reqData = request.json
+	
 	query = city = area = location = state = pincode = category = ""
-	
-	try:	
-		# Check the action specified in the POST data and do the right thing
-		fieldStore 	= cgi.FieldStorage()
-		
-		if "action" not in fieldStore:
-			results 	= { "execfault": "No action to process" }
-			pass
 
-		else:
-			action 		= fieldStore['action'].value
-			
-			if "query" in fieldStore:
-				query	= fieldStore["query"	].value
-			if "city" in fieldStore:
-				city	= fieldStore["city"	].value
-			if "area" in fieldStore:
-				area	= fieldStore["area"	].value
-			if "location" in fieldStore:
-				location= fieldStore["location"	].value
-			if "state" in fieldStore:
-				state	= fieldStore["state"	].value
-			if "pincode" in fieldStore:
-				pincode = fieldStore["pincode"	].value
-			if "category" in fieldStore:
-				category= fieldStore["category"	].value
-			if "jobIds" in fieldStore:
-				jobIds	= fieldStore["jobIds"	].value.split(",")
+	if "query" in reqData:
+		query	= reqData["query"	]
 	
-			if action=="TRIGGER":
-				results = trigger_all(query, city, area, location, state, pincode, category)
-				# Clean for YAML processing
-				results = results.replace("'", "\"")
-				results = results.replace('{u"', '{"')
-				results = results.replace(': u"', ': "')
-				results = results.replace(', u"', ', "')
-			
-				results = yaml.load(results) #Convert to a python dict
-			
-			elif action=="RECEIVE" : 
-				results = get_pending_results(jobIds)
-				results = re.sub(r'u(\'|")(.*?)\1', replace_unicode_marker, results)
-			else:
-				results= { "execfault": "Unknown action specified="+str(action) }
-				pass
-	except:
-		exc_type, exc_value	= sys.exc_info()[:2]
-	
-		stk_trc_entries = ''.join(traceback.format_list(traceback.extract_tb(sys.exc_info()[2])))
-		logger.error('type = '+str(exc_type) + ', value = '+str(exc_value) + ', traceback = '+stk_trc_entries)
+	if "city" in reqData:
+		city	= reqData["city"	]
 
-		results={"execfault" : "Something went wrong on the server"}
-
-	# HTTP headers
-	print 'HTTP/1.1 200 OK'
-	print 'Content-Type: application/json'
-	print 'Access-Control-Allow-Origin: *'		# for Cross-Origin Resource Sharing
-	print	
-	print json.JSONEncoder().encode(results)
+	if "area" in reqData:
+		area	= reqData["area"	]
 	
-	logger.debug(results)
+	if "location" in reqData:
+		location= reqData["location"]
+	
+	if "state" in reqData:
+		state	= reqData["state"	]
+
+	if "pincode" in reqData:
+		pincode = reqData["pincode"	]
+
+	if "category" in reqData:
+		category= reqData["category"]
+
+	results = trigger_all(query, city, area, location, state, pincode, category)
+
+	# Clean for YAML processing
+	results = clean_string(results)
+	
+	#results = yaml.load(results) #Convert to a python dict
+	logger.debug('[SCOP] Trigger results (processed): '+results)
+	return results
+
+def get_job_status(request):
+
+	logger 	= fileLogger.get_file_logger()
+	reqData = request.args.to_dict()
+
+	if "jobIds" in reqData:
+		jobIds	= reqData["jobIds"	].split(",")
+		results = get_pending_results(jobIds)
+		results = clean_string(str(results))
+		logger.debug('[SCOP] Job Status Results (processed): ' + results)
+		return results
+
+	else:
+		return '{"execFault": "No job ids specified"}'

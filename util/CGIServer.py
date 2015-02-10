@@ -25,6 +25,7 @@ class LoggingCGIHTTPRequestHandler(CGIHTTPServer.CGIHTTPRequestHandler):
 	def log_error(self, format, *args):
 		self.logger.error(format%args)
 
+
 if __name__ == "__main__":
 
 	serverName		=	'0.0.0.0'

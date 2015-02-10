@@ -3,102 +3,27 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Mass Blurb - Scanner</title>
+
+		<!-- The angular library -->
+		<script src="/html/js/angular.min.js"></script>
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular.min.js"></script> -->
+		
+		<!-- Application's top-level angular script-->
+		<script src="/html/js/app.js"></script>
+
+		<!-- Services -->
+		<script src="/html/js/scannerAPI.js"></script>
+
+		<!-- Controllers -->
+		<script src="/html/js/ScannerCtrl.js"></script>
 	</head>
-	<body>
-		<div id="formContainer">
-			<form>
-				<label for="srchName">Name</label>
-				<input type="text" id="srchName" name="srchName"/>
-				
-				<label for="srchLocation">Location</label>
-				<input type="text" id="srchLocation" name="srchLocation"/>
-				
-				<label for="srchArea">Area</label>
-				<input type="text" id="srchArea" name="srchArea"/>
-				
-				<label for="srchCity">City</label>
-				<input type="text" id="srchCity" name="srchCity"/>
-<!--				
-				<label for="srchState">State</label>
-				<input type="text" id="srchState" name="srchState"/>
-				
-				<label for="srchPIN">PIN Code</label>
-				<input type="text" id="srchPIN" name="srchPIN"/>
-				
-				<label for="srchCategory">Category</label>
-				<input type="text" id="srchCategory" name="srchCategory"/>
--->				
-				
-				<input type="button" label="Submit" onclick="beginSearch()" value="Submit"/>
-			</form>
-		</div>
+
+	<body ng-app="scanner">
+		<input-form></input-form>
 		<br/>
-		<div id="divListingsTable">
-			<table>
-				<tr>
-					<td>
-						<table border=1>
-							<th>Source</th>
-<!--							<tr><td>AllProducts</td></tr>	
-							<tr><td>AmericanTowns</td></tr>	
--->							<tr><td>AskLaila</td></tr>
-							<tr><td>Burrp</td></tr>			
-<!--							<tr><td>CityGrid</td>	</tr>	
-							<tr><td>EC21</td>	</tr>
-							<tr><td>ECPlaza</td></tr>		
-							<tr><td>EveningFlavours</td></tr>
-							<tr><td>ExportersIndia</td></tr>	
--->							<tr><td>FourSquare</td></tr>	
-<!--							<tr><td>HotFrog</td></tr>		
-							<tr><td>IndiaMart</td>	</tr>	
--->							<tr><td>JustDial India</td> </tr>
-<!--							<tr><td>JustDial US</td>	</tr>
-							<tr><td>Local</td>		</tr>	
-							<tr><td>PhoneNumber</td></tr>	
-							<tr><td>Pocketly</td>	</tr>	
-							<tr><td>SuperPages</td>	</tr>	
-							<tr><td>ThomasNet</td>	</tr>
--->							<tr><td>TimesCity</td>	</tr>	
-<!--							<tr><td>YellowBot</td>	</tr>	
-							<tr><td>YellowPages</td>	</tr>
-							<tr><td>Yelp</td>			</tr> 
--->							<tr><td>Zomato</td>		</tr>	
-							<tr><td>Zootout</td>	</tr>	
-						</table>
-					</td>
-					<td>
-						<table border=1>
-							<th>Business Name</th><th>Address</th><th>Phone</th><th>Timings</th>
-<!--							<tr id="allproducts">	<td colspan=4 >-</td>	</tr>
-							<tr id="americantowns">	<td colspan=4 >-</td>	</tr>
--->							<tr id="asklaila">		<td colspan=4 >-</td>	</tr>	
-							<tr id="burrp">			<td colspan=4 >-</td>	</tr>
-<!--							<tr id="citygrid">		<td colspan=4 >-</td>	</tr>
-							<tr id="ec21">			<td colspan=4 >-</td>	</tr>
-							<tr id="ecplaza">		<td colspan=4 >-</td>	</tr>
-							<tr id="eveningflavours"><td colspan=4>-</td>	</tr>
-							<tr id="exportersindia"><td colspan=4 >-</td>	</tr>
--->							<tr id="foursquare">	<td colspan=4 >-</td>	</tr>
-<!--							<tr id="hotfrog">		<td colspan=4 >-</td>	</tr>
-							<tr id="indiamart">		<td colspan=4 >-</td>	</tr>
--->							<tr id="justdialIndia"> <td colspan=4 >-</td>	</tr>
-<!--							<tr id="justdialUS">	<td colspan=4 >-</td>	</tr>
-							<tr id="local">			<td colspan=4 >-</td>	</tr>
-							<tr id="phonenumber">	<td colspan=4 >-</td>	</tr>
-							<tr id="pocketly">		<td colspan=4 >-</td>	</tr>
-							<tr id="superpages">	<td colspan=4 >-</td>	</tr>
-							<tr id="thomasnet">		<td colspan=4 >-</td>	</tr>
--->							<tr id="timescity">		<td colspan=4 >-</td>	</tr>
-<!--							<tr id="yellowbot">		<td colspan=4 >-</td>	</tr>
-							<tr id="yellowpages">	<td colspan=4 >-</td>	</tr>
-							<tr id="yelp"> 			<td colspan=4 >-</td>	</tr>
--->							<tr id="zomato">		<td colspan=4 >-</td>	</tr>
-							<tr id="zootout">		<td colspan=4 >-</td>	</tr>
-						</table>
-					</td>
-					
-		</div>
+		<results-table></results-table>
 	</body>
+	
 	<script type="text/javascript">
 
 	var SRCH_TMPL 			= "<td colspan=4> <font color='gray'>Searching...	</font></td>";
@@ -158,42 +83,19 @@
 				 '&city='	+ document.getElementById("srchCity").value 	+
 				 '&location='	+ document.getElementById("srchLocation").value	+
 				 '&area='	+ document.getElementById("srchArea").value );
-//				 '&state='	+ document.getElementById("srchState").value	+
-//				 '&pincode='	+ document.getElementById("srchPIN").value 	+
-//				 '&category='	+ document.getElementById("srchCategory").value);
 		xhr.open('GET', actionProcessor_url+'?'+params, true);
 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		xhr.send();
 		
-//		document.getElementById("allproducts").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("americantowns").innerHTML 	= SRCH_TMPL;
 		document.getElementById("asklaila").innerHTML 		= SRCH_TMPL;
 		document.getElementById("burrp").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("citygrid").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("ec21").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("ecplaza").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("eveningflavours").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("exportersindia").innerHTML 	= SRCH_TMPL;
 		document.getElementById("foursquare").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("hotfrog").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("indiamart").innerHTML		= SRCH_TMPL;
 		document.getElementById("justdialIndia").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("justdialus").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("local").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("phonenumber").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("pocketly").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("superpages").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("thomasnet").innerHTML 		= SRCH_TMPL;
 		document.getElementById("timescity").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("yellowbot").innerHTML 		= SRCH_TMPL;
-//		document.getElementById("yellowpages").innerHTML 	= SRCH_TMPL;
-//		document.getElementById("yelp").innerHTML 		= SRCH_TMPL;
 		document.getElementById("zomato").innerHTML 		= SRCH_TMPL;
-		document.getElementById("zootout").innerHTML 		= SRCH_TMPL;
-		
+		document.getElementById("zootout").innerHTML 		= SRCH_TMPL;		
 	}
 
-	
 	// Get the crawl-results of the specified jobs
 	function getJobsData(jobIds){
 		
@@ -229,9 +131,9 @@
 				
 				// ---------- Extract required lists -----------------
 				pendingJobs 	= respObj["pending"	];
-				emptyCrawls	= respObj["empty"	];
-				finishedItems	= respObj["finished"	];
-				erroredJobs	= respObj["error"	];
+				emptyCrawls		= respObj["empty"	];
+				finishedItems	= respObj["finished"];
+				erroredJobs		= respObj["error"	];
 				
 				console.log(pendingJobs);
 				console.log(emptyCrawls);
