@@ -7,7 +7,8 @@
 
 	function ScannerCtrl(scannerAPI){
 		var vm = this;
-
+		var POLL_TIME_MS = 2000
+		
 		vm.input = {};
 		vm.finished_items 	= [];
 		vm.error_items		= [];

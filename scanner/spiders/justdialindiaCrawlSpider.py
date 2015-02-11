@@ -39,7 +39,7 @@ class JustDialIndiaCrawlSpider(CrawlSpider):
 		if 'start_url' in kwargs:
 			self.start_urls = [kwargs.get('start_url')]
 		else:
-			self.start_urls = ['http://www.justdial.com/'+city+'/'+query]
+			self.start_urls = ['http://www.justdial.com/'+city+'/'+query+'-<near>-'+location]
 
 	def parse_item(self,response):
 
