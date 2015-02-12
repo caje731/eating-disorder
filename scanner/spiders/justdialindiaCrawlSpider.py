@@ -4,8 +4,6 @@ from scrapy.contrib.linkextractors import LinkExtractor
 
 from scanner.items import BusinessInfoItem
 
-
-#DONE BUT TOO MANY RESULTS.
 #JustDial India
 #start_url="http://www.justdial.com/Mumbai/pop-tates"
 #city="Mumbai"   ---> name --> Initials Capital
@@ -15,7 +13,7 @@ from scanner.items import BusinessInfoItem
 
 class JustDialIndiaCrawlSpider(CrawlSpider):
 
-	name = 'justdialIndiaCrawlSpider'
+	name = 'justdialindiaCrawlSpider'
 
 	def __init__(self, city, query, location, *args, **kwargs):
 		
@@ -45,8 +43,8 @@ class JustDialIndiaCrawlSpider(CrawlSpider):
 
 		l = ItemLoader(item = BusinessInfoItem(),response = response)
 		
-		l.add_xpath('name','/html/body/section[1]/section[2]/div/section/section[1]/aside/h1/span/span/text()')
-		l.add_xpath('address','/html/body/section[1]/section[2]/div/section/section[2]/section[2]/section[1]/aside/p[2]/span[2]/span/text()')
-		l.add_xpath('phone','/html/body/section[1]/section[2]/div/section/section[2]/section[2]/section[1]/aside/p[1]/span[2]/a/text()')
-		l.add_value('websource', 'justdialindia')
+		l.add_xpath('name',		'/html/body/section[1]/section[2]/div/section/section[1]/aside/h1/span/span/text()')
+		l.add_xpath('address',	'/html/body/section[1]/section[2]/div/section/section[2]/section[2]/section[1]/aside/p[2]/span[2]/span/text()')
+		l.add_xpath('phone',	'/html/body/section[1]/section[2]/div/section/section[2]/section[2]/section[1]/aside/p[1]/span[2]/a/text()')
+		l.add_value('websource','justdialindia')
 		return l.load_item()

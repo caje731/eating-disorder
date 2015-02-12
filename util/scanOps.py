@@ -4,7 +4,7 @@ import fileLogger 		# for custom logging (I'm not relying on Flask's in-app logg
 import subprocess		# for invocation of custom scrapy commands (assumed to be installed)
 import os				# 
 import glob				# filename globbing to retrieve scraped items
-import json, yaml, re	# for string processing
+import json, re			# for string processing
 import urllib2			# for invoking the scrapyd server APIs
 import sys, traceback 	# exception handling
 
@@ -44,13 +44,13 @@ def get_pending_results(jobIds):
 	response			= urllib2.urlopen(request)
 	jobstats			= json.loads(response.read())
 	
+
 	itemFiles			= {}	
 	for jobId in jobIds:
 		for filename in glob.iglob(SCRAPYD_ITEMS_PATH):  # The iterator will also list unwanted files, so filter them
 			if filename.endswith(jobId+'.jl'):
 				itemFiles[jobId] = filename
 				
-	
 	for fin_job in jobstats['finished']:
 		if fin_job["id"] in jobIds:
 			curr_job = str(fin_job["id"]).replace("u'", "'")
@@ -65,12 +65,20 @@ def get_pending_results(jobIds):
 				
 				while go_to_next_line:
 					itemstr = itemFile.readline()
+					logger.debug('Line read: '+ itemstr)
 					if len(itemstr) > 0:
 						lines_read += 1
 						# Convert the item string to a JSON object
 						item 		= json.loads(itemstr)
 						itemkeys 	= item.keys()
-						if "websource" in itemkeys and len(itemkeys) > 1: # There are keys apart from websource
+						if "websource" in itemkeys :
+
+							if len(itemkeys) == 1:
+								# Only websource was present, nothing scraped
+								empty_crawls.append(curr_job)
+								go_to_next_line = False
+								continue
+
 							# Fill/Insert missing keys with placeholder
 							# And join the list-elements of what's present into a string
 							
@@ -107,7 +115,7 @@ def get_pending_results(jobIds):
 						if lines_read == 0:
 							#empty_crawls.append(fin_job["spider"].replace("CrawlSpider", ""))
 							empty_crawls.append(curr_job)
-						go_to_next_line = False 
+						go_to_next_line = False
 		else:
 			# Do nothing, this job is not among the ones requested by the user
 			pass
@@ -153,10 +161,8 @@ def start_new_scan(request):
 
 	results = trigger_all(query, city, area, location, state, pincode, category)
 
-	# Clean for YAML processing
 	results = clean_string(results)
 	
-	#results = yaml.load(results) #Convert to a python dict
 	logger.debug('[SCOP] Trigger results (processed): '+results)
 	return results
 
