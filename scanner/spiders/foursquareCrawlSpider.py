@@ -28,6 +28,7 @@ class FoursquareCrawlSpider(CrawlSpider):
 	def parse_item(self,response):
 		l = ItemLoader(item = BusinessInfoItem(),response = response)
 		
+		# I couldn't find cost and cuisine elements
 		l.add_xpath('name','//div[@class="venueNameSection"]/span/text()')
 		l.add_xpath('phone','//*[@id="container"]/div/div[2]/div[1]/div[2]/div[3]/div[1]/div[2]/div[2]/span/text()')
 		l.add_xpath('address','//*[@itemtype="http://schema.org/PostalAddress"]/span/text()')

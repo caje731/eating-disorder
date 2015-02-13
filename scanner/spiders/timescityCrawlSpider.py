@@ -19,8 +19,8 @@ class TimesCityCrawlSpider(CrawlSpider):
 		location 	= location.replace(' ','-')
 		query 		= query.replace(' ','-')
 		
-		self.rules = (Rule(	LinkExtractor(	allow=(	'/'+city+'/'+location+'/.*'+query+'*',
-													'/'+city+'/'+location_1+'.*/.*'+query+'*'),
+		self.rules = (Rule(	LinkExtractor(	allow=(	'/'+city+'/'+location+'/.*'+query+'.*',
+													'/'+city+'/'+location_1+'.*/.*'+query+'.*'),
 											deny =(	'.*reviews.*',
 													'.*menu.*')
 										),
@@ -31,16 +31,21 @@ class TimesCityCrawlSpider(CrawlSpider):
 		if 'start_url' in kwargs:
 			self.start_urls = [kwargs.get('start_url')]
 		else:
-			self.start_urls = ['http://timescity.com/'+city+'/search?searchname='+query]
+			self.start_urls = ['http://timescity.com/'+city+'/search?searchname='+query.replace('-',' ')+' '+location.replace('-', ' ')]
 		
 
 	def parse_item(self,response):
 
 		l = ItemLoader(item = BusinessInfoItem(),response = response)
-		l.add_xpath('name','//*[@id="restaurantDetailDiv"]/div[1]/div/div[1]/div[1]/h1/a/text()')
-		l.add_xpath('address','//*[@id="restaurantDetailDiv"]/div[2]/div/div[1]/div[1]/span/span/text()')
-		l.add_xpath('phone','//*[@id="collapsesix"]/div/div/div/div/span/a/text()')
-		l.add_value('websource', 'timescity')
+		l.add_xpath('name',		'//*[@id="restaurantDetailDiv"]/div[1]/div/div[1]/div[1]/h1/a/text()')
+		l.add_xpath('address',	'//*[@id="restaurantDetailDiv"]/div[2]/div/div[1]/div[1]/span/span/text()')
+		l.add_xpath('phone',	'//*[@id="collapsesix"]/div/div/div/div/span/a/text()')
+		l.add_xpath('cuisine', 	'//span[@itemprop="servesCuisine"]/text()')
+		l.add_xpath('cuisine', 	'//span[@itemprop="servescuisine"]/text()')	
+		l.add_xpath('cost', 	'//ul[@id="accordion"]/li[2]/strong/text()')
+		l.add_xpath('cost', 	'//ul[@id="accordion"]/li[2]/text()')
+		l.add_value('websource','timescity')
+
 		return l.load_item()
 		
 		#//*[@id="restaurantDetailDiv"]/div[2]/div/div[1]/div[1]/span[2]

@@ -34,5 +34,5 @@ WEBSERVICE_ENABLED = False
 WEBSERVICE_PORT = 6655
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'scanner (+http://www.massblurb.com)'
+USER_AGENT = 'scanner (+http://www.massblurb.com)'
 

@@ -37,9 +37,13 @@ class AsklailaCrawlSpider(CrawlSpider):
 	def parse_item(self,response):
 
 		l = ItemLoader(item = BusinessInfoItem(),response = response)
-		l.add_xpath('name','//*[@id="ldpAdrsDetails"]/div[1]/div[1]/div/h1/span/text()')
+		#l.add_xpath('name','//*[@id="ldpAdrsDetails"]/div[1]/div[1]/div/h1/span/text()')
+		l.add_xpath('name','//span[@itemprop="name"]/h1/text()')
+		
 		l.add_xpath('address','//span[@class="adr"]')
 		l.add_xpath('phone','//span[@itemprop="telephone"]/text()')
+		l.add_xpath('cuisine', '//span[@itemprop="servesCuisine"]/text()')
+
 		l.add_value('websource', 'asklaila')
 		item = l.load_item()
 		

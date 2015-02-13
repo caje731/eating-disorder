@@ -8,5 +8,7 @@ class BusinessInfoItem(scrapy.Item):
 	phone		= 	scrapy.Field()
 	timings		=	scrapy.Field()
 	websource 	=	scrapy.Field()	
+	cuisine		=	scrapy.Field()
+	cost		= 	scrapy.Field()
 	
     

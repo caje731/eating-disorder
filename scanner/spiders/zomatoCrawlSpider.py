@@ -71,5 +71,10 @@ class ZomatoCrawlSpider(CrawlSpider):
 		l.add_xpath('phone','//*[@id="phoneNoString"]/div/span/span[2]/span/text()')
 		
 		l.add_xpath('timings','//span[@class="res-info-timings"]/div/div[1]/div[2]/span[1]/text()')
+
+		l.add_xpath('cuisine','//a[@itemprop="servesCuisine"]/text()')
+
+		l.add_xpath('cost', '//span[@itemprop="priceRange"]/text()')
+
 		l.add_value('websource', 'zomato')
 		return  l.load_item()
