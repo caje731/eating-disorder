@@ -12,14 +12,26 @@ import sys, traceback 	# exception handling
 def replace_unicode_marker(matchobj):
 	return '"'+matchobj.group(2)+'"'		
 
+
 # Cleans unicode markers and single quotes from a string
 def clean_string(unclean_str):
 	unclean_str = unclean_str.replace("\\xa0", "")  # remove non-breaking space \xa0 if present
-	unclean_str = unclean_str.replace("'", "\"")	# Client-side js won't like single quote while loading json
-	unclean_str = unclean_str.replace('{u"', '{"')	# u is unicode marker
-	unclean_str = unclean_str.replace(': u"', ': "')
-	unclean_str = unclean_str.replace('[u"', '["')
-	clean_str 	= unclean_str.replace(', u"', ', "')
+	unclean_str = unclean_str.replace("{u'"	, "{\""	)
+	unclean_str = unclean_str.replace(": u'", ": \"")
+	unclean_str = unclean_str.replace("[u'"	, "[\""	)
+	unclean_str = unclean_str.replace("', u'","\", \"")
+	unclean_str = unclean_str.replace(": u\"",": \"")
+	unclean_str = unclean_str.replace(", u'",", \"")
+	unclean_str = unclean_str.replace("{'"	, "{\"")	
+	unclean_str = unclean_str.replace("'}"	, "\"}")	
+	unclean_str = unclean_str.replace(": '"	, ": \"")	
+	unclean_str = unclean_str.replace("':", "\":")	
+	unclean_str = unclean_str.replace("\", '", "\", \"")		
+	unclean_str = unclean_str.replace("'], '", "\"], \"")
+	unclean_str = unclean_str.replace("], '", "], \"")
+	unclean_str = unclean_str.replace("['", "[\"")
+	clean_str 	= unclean_str.replace("', '", "\", \"")	
+
 	return clean_str
 
 
@@ -27,6 +39,7 @@ def trigger_all(query, city, area, location, state, pincode, category):
 	logger = fileLogger.get_file_logger()
 	logger.debug('[SCOP] Triggering scrapy allcrawl...')
 	return subprocess.check_output(['scrapy', 'allcrawl', 'query='+query, 'city='+city, 'area='+area, 'location='+location, 'state='+state, 'pincode='+pincode,'category='+category], stderr=subprocess.STDOUT)
+
 
 def get_pending_results(jobIds):
 	
@@ -103,6 +116,16 @@ def get_pending_results(jobIds):
 								item["timings"] = 'Not found'
 							else:
 								item["timings"] = ' '.join(item["timings"])
+
+							if "cost" not in itemkeys:
+								item["cost"] = 'Not found'
+							else:
+								item["cost"] = ' '.join(item["cost"])
+
+							if "cuisine" not in itemkeys:
+								item["cuisine"] = 'Not found'
+							else:
+								item["cuisine"] = ', '.join(item["cuisine"])
 								
 							finished_jobItems.append(item)
 							go_to_next_line = False 

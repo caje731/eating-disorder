@@ -1,22 +1,32 @@
 <table border=1>
-	<th>Source</th><th>Business Name</th><th>Address</th><th>Phone</th><th>Timings</th>
+	<tr>
+		<th>Source</th>
+		<th>Business Name</th>
+		<th>Cuisine</th>
+		<th>Cost</th>
+		<th>Timings</th>
+		<th>Address</th>
+		<th>Phone</th>
+	</tr>
 	<tr ng-repeat="item in scanner.getFinishedItems()">
 		<td>{{item.websource}}</td>
 		<td>{{item.name}}</td>
+		<td>{{item.cuisine}}</td>
+		<td>{{item.cost}}</td>
+		<td>{{item.timings}}</td>
 		<td>{{item.address}}</td>
 		<td>{{item.phone}}</td>	
-		<td>{{item.timings}}</td>
 	</tr>
 	<tr ng-repeat="item in scanner.getPendingItems()">
 		<td>{{item.websource}}</td>
-		<td colspan="4"><span style="color:gray">WORKING...</span></td>
+		<td colspan="6"><span style="color:gray">WORKING...</span></td>
 	</tr>
 	<tr ng-repeat="item in scanner.getEmptyItems()">
 		<td>{{item.websource}}</td>
-		<td colspan="4"><span style="color:brown">NO LISTING</span></td>
+		<td colspan="6"><span style="color:brown">NO LISTING</span></td>
 	</tr>
 	<tr ng-repeat="item in scanner.getErrorItems()">
 		<td>{{item.websource}}</td>
-		<td colspan="4"><span style="color:red">ERROR !</span></td>
+		<td colspan="6"><span style="color:red">ERROR !</span></td>
 	</tr>	
 </table>
