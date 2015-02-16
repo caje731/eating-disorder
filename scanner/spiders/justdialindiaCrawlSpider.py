@@ -51,4 +51,6 @@ class JustDialIndiaCrawlSpider(CrawlSpider):
 		l.add_xpath('phone',  	'//aside[@class="continfo "]/p[3]/a/text()')
 		l.add_xpath('timings', 	'//tr[@class="reset"]/td/text()')
 		l.add_value('websource','justdialindia')
+		# The menus are not images that can be scraped
+		
 		return l.load_item()

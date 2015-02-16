@@ -44,9 +44,14 @@ class TimesCityCrawlSpider(CrawlSpider):
 		l.add_xpath('cuisine', 	'//span[@itemprop="servescuisine"]/text()')	
 		l.add_xpath('cost', 	'//ul[@id="accordion"]/li[2]/strong/text()')
 		l.add_xpath('cost', 	'//ul[@id="accordion"]/li[2]/text()')
+		l.add_xpath('menus',	'//a[@href="#Menu"]/img')
 		l.add_value('websource','timescity')
 
-		return l.load_item()
+		item = l.load_item()
+		if 'menus' in item:
+			item['menus'] = ['<a href="'+response.url+'#Menu">'+image+'</a>' for image in item['menus']]
+
+		return item
 		
 		#//*[@id="restaurantDetailDiv"]/div[2]/div/div[1]/div[1]/span[2]
 		#//*[@id="restaurantDetailDiv"]/div[2]/div/div[1]/div[1]/span/text()

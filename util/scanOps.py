@@ -126,6 +126,15 @@ def get_pending_results(jobIds):
 								item["cuisine"] = 'Not found'
 							else:
 								item["cuisine"] = ', '.join(item["cuisine"])
+
+							# Since menus will contain HTML which will need to be bound by client-side code to the DOM,
+							# ensure that simple strings are also within HTML tags
+							if "menus" not in itemkeys:
+								item["menus"] = '<p>Not found</p>'
+							else:
+								item["menus"] = ' '.join(item["menus"])
+								item["menus"] = item["menus"].replace('"', "'")
+
 								
 							finished_jobItems.append(item)
 							go_to_next_line = False 

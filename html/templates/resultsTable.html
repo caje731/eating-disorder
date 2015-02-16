@@ -7,6 +7,7 @@
 		<th>Timings</th>
 		<th>Address</th>
 		<th>Phone</th>
+		<th>Menu Images</th>
 	</tr>
 	<tr ng-repeat="item in scanner.getFinishedItems()">
 		<td>{{item.websource}}</td>
@@ -15,18 +16,19 @@
 		<td>{{item.cost}}</td>
 		<td>{{item.timings}}</td>
 		<td>{{item.address}}</td>
-		<td>{{item.phone}}</td>	
+		<td>{{item.phone}}</td>
+		<td ng-bind-html="item.menus"><td>
 	</tr>
 	<tr ng-repeat="item in scanner.getPendingItems()">
 		<td>{{item.websource}}</td>
-		<td colspan="6"><span style="color:gray">WORKING...</span></td>
+		<td colspan="7"><span style="color:gray">WORKING...</span></td>
 	</tr>
 	<tr ng-repeat="item in scanner.getEmptyItems()">
 		<td>{{item.websource}}</td>
-		<td colspan="6"><span style="color:brown">NO LISTING</span></td>
+		<td colspan="7"><span style="color:brown">NO LISTING</span></td>
 	</tr>
 	<tr ng-repeat="item in scanner.getErrorItems()">
 		<td>{{item.websource}}</td>
-		<td colspan="6"><span style="color:red">ERROR !</span></td>
+		<td colspan="7"><span style="color:red">ERROR !</span></td>
 	</tr>	
 </table>

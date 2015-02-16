@@ -2,7 +2,7 @@
 	
 	'use strict';
 
-	var app = angular.module('scanner', []);
+	var app = angular.module('scanner', ['ngSanitize']);
 
 	app.directive('inputForm', function(){
 		return {

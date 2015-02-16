@@ -38,4 +38,5 @@ class FoursquareCrawlSpider(CrawlSpider):
 		l.add_xpath('address','//*[@id="container"]/div/div[2]/div[1]/div[2]/div[2]/div[2]/div[2]/div/span[4]/text()')
 		l.add_xpath('address','//*[@id="container"]/div/div[2]/div[1]/div[2]/div[2]/div[2]/div[2]/div/text()[3]/text()')
 		l.add_value('websource', 'foursquare')
+		# Couldn't find any menu images on foursquare
 		return l.load_item()

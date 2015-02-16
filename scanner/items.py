@@ -10,5 +10,6 @@ class BusinessInfoItem(scrapy.Item):
 	websource 	=	scrapy.Field()	
 	cuisine		=	scrapy.Field()
 	cost		= 	scrapy.Field()
-	
+	menus		=	scrapy.Field()
+	websourcelink=  scrapy.Field()
     

@@ -48,6 +48,7 @@ class ZootoutCrawlSpider(CrawlSpider):
 		l.add_xpath('phone',	'/html/body/div[5]/div[1]/div/div[2]/div[1]/div[3]/@onclick')
 		l.add_xpath('cuisine',	'//*[@id="port"]/div[2]/div[1]/div/div[5]/span/text()')
 		l.add_xpath('cost',		'//div[@itemprop="priceRange"]/text()')
+		# Couldn't find any menu images on foursquare
 
 		l.add_value('websource', 'zootout')
 		

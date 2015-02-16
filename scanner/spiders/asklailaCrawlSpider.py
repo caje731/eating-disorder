@@ -43,7 +43,7 @@ class AsklailaCrawlSpider(CrawlSpider):
 		l.add_xpath('address','//span[@class="adr"]')
 		l.add_xpath('phone','//span[@itemprop="telephone"]/text()')
 		l.add_xpath('cuisine', '//span[@itemprop="servesCuisine"]/text()')
-
+		# I couldn't find any menu images on asklaila
 		l.add_value('websource', 'asklaila')
 		item = l.load_item()
 		

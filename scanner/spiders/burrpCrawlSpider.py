@@ -48,6 +48,12 @@ class BurrpCrawlSpider(CrawlSpider):
 		l.add_xpath('cost', '//span[@itemprop="priceRange"]/strong/span[2]/text()') # 500
 
 		l.add_xpath('cuisine', '//*[@id="listings-details"]/section[2]/div/div[1]/div[1]/div/ul/li[3]/a/text()')
-		
+		l.add_xpath('menus', '//*[@id="listings-details"]/section[2]/div/div[1]/div[2]/div[1]/div[1]/a/img')
+
 		l.add_value('websource', 'burrp')
-		return l.load_item()
+
+		item = l.load_item()
+		if 'menus' in item:
+			item['menus'] = ['<a href="'+response.url+'">'+image+'</a>' for image in item['menus']]
+
+		return item
