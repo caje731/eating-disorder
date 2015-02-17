@@ -30,6 +30,7 @@ class FoursquareCrawlSpider(CrawlSpider):
 		
 		# I couldn't find cost and cuisine elements
 		l.add_xpath('name','//div[@class="venueNameSection"]/span/text()')
+		l.add_xpath('name','//div[@class="venueNameSection"]/h1/text()')
 		l.add_xpath('phone','//*[@id="container"]/div/div[2]/div[1]/div[2]/div[3]/div[1]/div[2]/div[2]/span/text()')
 		l.add_xpath('address','//*[@itemtype="http://schema.org/PostalAddress"]/span/text()')
 		l.add_xpath('address','//*[@id="container"]/div/div[2]/div[1]/div[2]/div[2]/div[2]/div[2]/div/span[1]/text()')
